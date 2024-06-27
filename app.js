@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use(morgan('dev'));
 
-app.use('/api', router);
+app.use('/api/v1', router);
 
 // == == == THIS IS CALLED WHITE LIST == == ==
 app.use((req, res) => {
