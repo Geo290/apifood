@@ -9,7 +9,6 @@
   "author": "Geo290",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.7.0",
@@ -17,6 +16,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "dotenv": "^16.4.5",
     "nodemon": "^3.1.3"
   }
 }
