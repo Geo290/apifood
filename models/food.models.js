@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const {Schema, model} = mongoose;
 
-const servicioSchema = new Schema({
+const foodSchema = new Schema({
     name:
     {
         type:String,
@@ -28,4 +28,4 @@ const servicioSchema = new Schema({
     timestamps: true
 });
 
-export const servicioModel = model('solicitud', servicioSchema);
+export const foodModel  = model('solicitud', foodSchema);
