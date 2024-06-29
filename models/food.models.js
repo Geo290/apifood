@@ -28,4 +28,4 @@ const foodSchema = new Schema({
     timestamps: true
 });
 
-export const foodModel  = model('solicitud', foodSchema);
+export const foodModel  = model('dish', foodSchema);
