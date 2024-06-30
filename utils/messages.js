@@ -1,4 +1,5 @@
-const messages = {}
+const messages = {};
+
 messages.messageGeneral = (res, statusCode, ok, data, message) =>{
     res.status(statusCode).json({
         ok,
@@ -7,4 +8,4 @@ messages.messageGeneral = (res, statusCode, ok, data, message) =>{
     });
 };
 
-export default messages;
+module.exports = {messages};
