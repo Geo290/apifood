@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-const {Schema, model} = mongoose;
+const {Schema, model} = require("mongoose");
 
 const foodSchema = new Schema({
     name:
@@ -22,7 +21,6 @@ const foodSchema = new Schema({
         type:String,
         require:true
     }
-   
     
 },{
     timestamps: true
