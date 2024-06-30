@@ -4,9 +4,9 @@ const controller = require("../controllers/food.controllers.js");
 const router = express.Router();
 
 router.get("/food", controller.listDishes)
-    .get("/food:name", controller.getDish)
+    .get("/food/:name", controller.getDish)
     .post("/food", controller.newDish)
-    .put("/food/:id", controller.updateDish)
-    .delete("/food/:id", controller.deleteDish);
+    .put("/food/:name", controller.updateDish)
+    .delete("/food/:name", controller.deleteDish);
 
 module.exports = router;
