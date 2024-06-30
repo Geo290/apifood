@@ -26,4 +26,6 @@ const foodSchema = new Schema({
     timestamps: true
 });
 
-export const foodModel  = model('dish', foodSchema);
+const foodModel  = model('dish', foodSchema);
+
+module.exports = {foodModel};
