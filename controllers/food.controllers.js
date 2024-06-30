@@ -1,9 +1,8 @@
 //Importar el archivo del Model
 const { foodModel } = require("../models/food.models.js");
-const { message } = require("../utils/messages.js");
+const { messageGeneral } = require("../utils/messages.js");
 
 const foodCtrl = {};
-const { messageGeneral } = message;
 
 //New register food
 foodCtrl.newDish = async (req, res) => {
@@ -20,10 +19,8 @@ foodCtrl.newDish = async (req, res) => {
 //Consult all records
 foodCtrl.listDishes = async (req, res) => {
     try {
-        const resp = await foodModel.find().populate({
-            path: "name"
-        });
-        messageGeneral(res,);
+        const resp = await foodModel.find();
+        messageGeneral(res, 201, true, resp, "Información obtenida");
     } catch (error) {
         messageGeneral(res, 500, false, "", error.message);
     }
@@ -33,7 +30,7 @@ foodCtrl.listDishes = async (req, res) => {
 foodCtrl.updateDish = async (req, res) => {
     try {
         const { name } = req.params;
-        const resp = await foodModel.findById(name);
+        const resp = await foodModel.findOne({name});
         if (!resp) {
             return messageGeneral(res, 404, false, "", "Registro no encontrada");
         }
@@ -48,7 +45,7 @@ foodCtrl.updateDish = async (req, res) => {
 foodCtrl.deleteDish = async (req, res) => {
     try {
         const { name } = req.params;
-        const resp = await foodModel.findById(name);
+        const resp = await foodModel.findOne(name);
         if (!resp) {
             return messageGeneral(res, 404, false, "", "Registro no encontrado");
         }
@@ -63,7 +60,8 @@ foodCtrl.deleteDish = async (req, res) => {
 foodCtrl.getDish = async (req, res) => {
     try {
         const { name } = req.params;
-        const resp = await foodModel.findOne({ name });
+        console.log("requested dish", name);
+        const resp = await foodModel.findOne({"name" : { $regex: new RegExp(`^${name}$`, 'i') }});
         if (!resp) {
             return messageGeneral(res, 404, false, "", "Registro no encontrado");
         }
