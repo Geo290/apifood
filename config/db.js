@@ -17,16 +17,43 @@ const client = new MongoClient(uri, {
   }
 });
 
-async function run() {
+const run = async () => {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db(`${DB}`).command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
+    console.log("App successfully connected to DB");
+
+  } catch (error) {
+    console.error("Error while connecting to DB: ", error);
+    process.exit(1);
+  };
+
+};
+
+const stop = async (server) => {
+
+  server.close(async (error) => {
+    if (error) {
+      console.error("Error while closing the server: ", error);
+      process.exit(1);
+    };
+
+  });
+  
+  try {
     // Ensures that the client will close when you finish/error
     await client.close();
-  }
-}
-run().catch(console.dir);
+    console.log("App successfully disconnected from DB");
+    process.exit(0);
+
+  } catch (error) {
+    console.error("Error while disconnecting from DB: ", error);
+    process.exit(1);
+
+  };
+};
+
+// run().catch(console.dir);
+module.exports = { run, stop }; 
