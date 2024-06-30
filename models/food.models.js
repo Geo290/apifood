@@ -8,7 +8,7 @@ const foodSchema = new Schema({
     },
     ingredients:
     {
-        type:String,
+        type:[String],
         require:true
     },
     cost:
@@ -26,6 +26,6 @@ const foodSchema = new Schema({
     timestamps: true
 });
 
-const foodModel  = model('dish', foodSchema);
+const foodModel  = model('dishes', foodSchema);
 
 module.exports = {foodModel};
