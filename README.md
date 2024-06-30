@@ -14,5 +14,5 @@ http://localhost:PORT/api/v1/food/new
 __Update dish__ <br/>
 http://localhost:PORT/api/v1/food/update/?name=DISHNAME
 
-__Delete dish__
+__Delete dish__ <br/>
 http://localhost:PORT/api/v1/food/delete/?name=DISHNAME
