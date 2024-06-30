@@ -8,4 +8,4 @@ messages.messageGeneral = (res, statusCode, ok, data, message) =>{
     });
 };
 
-module.exports = {messages};
+module.exports = messages;
