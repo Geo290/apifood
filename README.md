@@ -2,17 +2,17 @@
 
 ## Enpoints
 
-_List all dishes_
+__List all dishes__ 
 http://localhost:PORT/api/v1/food
 
-_Search dish_
+__Search dish__
 http://localhost:PORT/api/v1/food/get/?name=DISHNAME
 
-_Create new dish_
+__Create new dish__
 http://localhost:PORT/api/v1/food/new
 
-_Update dish_
+__Update dish__
 http://localhost:PORT/api/v1/food/update/?name=DISHNAME
 
-_Delete dish_
+__Delete dish__
 http://localhost:PORT/api/v1/food/delete/?name=DISHNAME
