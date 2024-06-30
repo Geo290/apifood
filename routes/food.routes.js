@@ -1,8 +1,11 @@
 const express = require('express');
-const router = express.Router();
+const router = require("../controllers/food.controllers.js");
 
-router.get('/food', (req, res) => {
-    return res.json({message: "Loaded. No food"});
-})
+const route = express();
 
-module.exports = router;
+route.get("/food",controllers.mostrarTodo)
+.post("/food", controllers.ingresafood)
+.put("/food/:id",controladorVinos.editarVino)
+.delete("/food/:id",controladorVinos.eliminarVino)
+
+module.exports = router
