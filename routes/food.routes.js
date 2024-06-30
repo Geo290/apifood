@@ -1,11 +1,18 @@
 const express = require('express');
-const router = require("../controllers/food.controllers.js");
+const controller = require("../controllers/food.controllers.js");
 
-const route = express();
+const router = express.Router();
 
-route.get("/food",controllers.mostrarTodo)
-.post("/food", controllers.ingresafood)
-.put("/food/:id",controladorVinos.editarVino)
-.delete("/food/:id",controladorVinos.eliminarVino)
+router.get("/", controller.listDishes);
+router.get("/get", controller.getDish);
+router.post("/new", controller.newDish);
+router.put("/update", controller.updateDish);
+router.delete("/delete", controller.deleteDish);
 
-module.exports = router
+// == == == THIS IS CALLED WHITE LIST == == ==
+router.use((req, res) => {
+    res.status(404).json({ message: 'Route not found' });
+});
+// == == == == == == == == == == == == == == ==
+
+module.exports = router;
