@@ -1,11 +1,12 @@
 const express = require('express');
-const router = require("../controllers/food.controllers.js");
+const controller = require("../controllers/food.controllers.js");
 
-const route = express();
+const router = express.Router();
 
-route.get("/food",controllers.mostrarTodo)
-.post("/food", controllers.ingresafood)
-.put("/food/:id",controladorVinos.editarVino)
-.delete("/food/:id",controladorVinos.eliminarVino)
+router.get("/food", controller.listDishes)
+    .get("/food:name", controller.getDish)
+    .post("/food", controller.newDish)
+    .put("/food/:id", controller.updateDish)
+    .delete("/food/:id", controller.deleteDish);
 
-module.exports = router
+module.exports = router;
