@@ -1,26 +1,28 @@
 const express = require('express');
 const morgan = require('morgan');
 const router = require('./routes/food.routes.js');
+const { run, stop } = require('./config/db.js');
 
 const app = express();
-
 const port = 4000;
 
-app.use(express.urlencoded({extended: false}));
-
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 app.use(morgan('dev'));
-
 app.use('/api/v1', router);
-
 // == == == THIS IS CALLED WHITE LIST == == ==
 app.use((req, res) => {
-    res.status(404).json({message: 'route not found'});
-})
+    res.status(404).json({ message: 'route not found' });
+});
 // == == == == == == == == == == == == == == ==
 
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});
+// connect to DB
+run().then(() => {
+    const server = app.listen(port, () => {
+        console.log(`Server listening on port ${port}`);
+    });
 
+    process.on('SIGTERM', () => { stop(server); });
+    process.on('SIGINT', () => { stop(server); });
+
+}).catch(console.error);
