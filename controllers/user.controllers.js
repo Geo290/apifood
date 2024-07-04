@@ -1,64 +1,46 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const UserModel = require('../models/user.models.js');
-const messages = require('../utils/messages.js');
+const User = require('../models/user.models.js');
+const { messageGeneral } = require('../utils/messages');
 
-const { messageGeneral } = messages;
 const userCtrl = {};
 
 userCtrl.register = async (req, res) => {
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10); // Encripta la contraseña
-        const user = await UserModel.create({ ...req.body, password: hashedPassword });
-        res.json({
-            message: messageGeneral,
-            data: user
-        });
+        const { username, password } = req.body;
+        const existingUser = await User.findOne({ username: username });
+        if (existingUser) {
+            return messageGeneral(res, 400, false, "", "El nombre de usuario ya existe");
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = await User.create({ username, password: hashedPassword });
+        const token = jwt.sign({ _id: newUser._id }, secretKey); // Usa secretKey directamente aquí
+
+        messageGeneral(res, 201, true, { ...newUser._doc, password: null, token }, "El usuario se creó correctamente!!!");
     } catch (error) {
-        res.status(500).json({
-            message: "Error al registrar usuario",
-            error: error.message
-        });
+        messageGeneral(res, 500, false, "", error.message);
     }
 };
 
 userCtrl.login = async (req, res) => {
-    const { username, password } = req.body;
     try {
-        const user = await UserModel.findOne({ username });
+        const { username, password } = req.body;
+        const user = await User.findOne({ username: username });
         if (!user) {
-            return res.status(404).json({
-                message: "Usuario no encontrado"
-            });
+            return messageGeneral(res, 400, false, "", "El nombre de usuario no existe");
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({
-                message: "Contraseña incorrecta"
-            });
+            return messageGeneral(res, 400, false, "", "La contraseña es incorrecta!!!");
         }
 
-        const token = jwt.sign(
-            {
-                id: user.id,
-                username: user.username
-            },
-            process.env.SECRET_KEY,
-            {
-                expiresIn: 60 * 60 * 24
-            }
-        );
+        const token = jwt.sign({ _id: user._id }, secretKey); // Usa secretKey directamente aquí
 
-        res.json({
-            message: "Login exitoso",
-            token
-        });
+        return messageGeneral(res, 200, true, { ...user._doc, password: null, token }, "Bienvenido!!!");
     } catch (error) {
-        res.status(500).json({
-            message: "Error al iniciar sesión",
-            error: error.message
-        });
+        messageGeneral(res, 500, false, "", error.message);
     }
 };
 
