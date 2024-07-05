@@ -28,7 +28,7 @@ foodCtrl.listDishes = async (req, res) => {
 }
 
 //Consult by product name
-foodCtrl.getDish = async (req, res) => {
+foodCtrl.getDishesByName = async (req, res) => {
     try {
         const { name } = req.query;
         const resp = await foodModel.findOne({ name });
@@ -44,8 +44,48 @@ foodCtrl.getDish = async (req, res) => {
     }
 }
 
+//Consult by ingredient of the dish
+foodCtrl.getDishesByIngredients = async (req, res) => {
+    try {
+        const { ingredients } = req.query;
+
+        if (!ingredients) {
+            return messageGeneral(res, 404, false, "", "Por favor, proporciona un ingrediente");
+        }
+
+        const ingredientsArray = ingredients.split(',').map(ingredients => ingredients.trim());
+        const resp = await foodModel.find({ ingredients: {$in: ingredientsArray} });
+
+        if(!resp || resp.length === 0) {
+            return messageGeneral(res, 404, false, "", "Registro no encontrado");
+        }
+
+        messageGeneral(res, 200, true, resp, "Registro encontrado");
+
+    } catch (error) {
+        messageGeneral(res, 500, false, "", error.message);
+    }
+}
+
+//Check for product price
+foodCtrl.getDishesForPrices = async (req, res) => {
+    try {
+        const { price } = req.query;
+        const resp = await foodModel.findOne({ price });
+
+        if (!resp) {
+            return messageGeneral(res, 404, false, "", "Registro no encontrado"); 
+        }
+
+        messageGeneral(res, 200, true, resp, "Registro encontrado");
+
+    } catch (error) {
+         messageGeneral(res, 500, false, "", error.message);
+    }
+}
+
 //Update 
-foodCtrl.updateDish = async (req, res) => {
+foodCtrl.updateDishesByName = async (req, res) => {
     try {
         const { name } = req.query;
         const resp = await foodModel.findOne({ name });
@@ -55,15 +95,62 @@ foodCtrl.updateDish = async (req, res) => {
         }
 
         await resp.updateOne(req.body);
-        messageGeneral(res, 200, true, "", "Registro actualizada");
+        messageGeneral(res, 200, true, "", "Registro actualizado");
 
     } catch (error) {
         messageGeneral(res, 500, false, "", error.message);
     }
 }
 
+//Update for price
+foodCtrl.updateDishesForPrice = async (req, res) => {
+    try {
+        const { price } = req.query;
+        const resp = await foodModel.findOne({ price });
+
+        if (!resp) {
+            return messageGeneral(res, 404, false, "", "Registro no encontrada");
+        }
+
+        await resp.updateOne(req.body);
+        messageGeneral(res, 200, true, "", "Registro actualizado");
+
+    } catch (error) {
+        messageGeneral(res, 500, false, "", error.message);
+    }
+}
+
+// Update dish by ingredients
+foodCtrl.updateDishByIngredients = async (req, res) => {
+    try {
+        const { ingredients } = req.query;
+        const { updateField } = req.body; // Assuming you receive fields to update
+
+        if (!ingredients || !updateField) {
+            return messageGeneral(res, 400, false, "", "Por favor, proporciona ingredientes y campos a actualizar");
+        }
+
+        const ingredientsArray = ingredients.split(',').map(ingredient => ingredient.trim());
+
+        const updateResult = await foodModel.updateMany(
+            { ingredients: { $in: ingredientsArray } },
+            { $set: updateField }
+        );
+
+        if (updateResult.nModified === 0) {
+            return messageGeneral(res, 404, false, "", "Ningún platillo encontrado para actualizar");
+        }
+
+        messageGeneral(res, 200, true, updateResult, "Platillos actualizados exitosamente");
+
+    } catch (error) {
+        messageGeneral(res, 500, false, "", error.message);
+    }
+}
+
+
 //Delete
-foodCtrl.deleteDish = async (req, res) => {
+foodCtrl.deleteDishesByName = async (req, res) => {
     try {
         const { name } = req.query;
         const resp = await foodModel.findOne({ name });
@@ -79,5 +166,51 @@ foodCtrl.deleteDish = async (req, res) => {
         messageGeneral(res, 500, false, "", error.message);
     }
 }
+
+
+
+//Delete for price
+foodCtrl.deleteDishesForPrice = async (req, res) => {
+    try {
+        const { price } = req.query;
+        const resp = await foodModel.findOne({ price });
+
+        if (!resp) {
+            return messageGeneral(res, 404, false, "", "Registro no encontrado");
+        }
+
+        await resp.deleteOne();
+        messageGeneral(res, 200, true, "", "Registro eliminado");
+
+    } catch (error) {
+        messageGeneral(res, 500, false, "", error.message);
+    }
+}
+
+// Delete dish by ingredients
+foodCtrl.deleteDishByIngredients = async (req, res) => {
+    try {
+        const { ingredients } = req.query;
+
+        if (!ingredients) {
+            return messageGeneral(res, 400, false, "", "Por favor, proporciona ingredientes para eliminar");
+        }
+
+        const ingredientsArray = ingredients.split(',').map(ingredient => ingredient.trim());
+
+        const deleteResult = await foodModel.deleteMany({ ingredients: { $in: ingredientsArray } });
+
+        if (deleteResult.deletedCount === 0) {
+            return messageGeneral(res, 404, false, "", "Ningún platillo encontrado para eliminar");
+        }
+
+        messageGeneral(res, 200, true, deleteResult, "Platillos eliminados exitosamente");
+
+    } catch (error) {
+        messageGeneral(res, 500, false, "", error.message);
+    }
+}
+
+
 
 module.exports = foodCtrl;
