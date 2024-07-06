@@ -12,6 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/api/v1/food', router);
+app.use(require('./controllers/user.controllers.js'))
 
 // connect to DB
 run().then(() => {

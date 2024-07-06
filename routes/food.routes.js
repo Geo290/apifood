@@ -1,14 +1,15 @@
 const express = require('express');
 const controller = require("../controllers/food.controllers.js");
+const verifyToken = require('../controllers/verifyToken.js')
 
 const router = express.Router();
 
 //nombre
-router.get("/", controller.listDishes);
-router.get("/get/by-name", controller.getDishesByName);
-router.post("/new", controller.newDish);
-router.put("/update/by-name", controller.updateDishesByName);
-router.delete("/delete/by-name", controller.deleteDishesByName);
+router.get("/", verifyToken, controller.listDishes);
+router.get("/get/by-name",verifyToken, controller.getDishesByName);
+router.post("/new",verifyToken, controller.newDish);
+router.put("/update/by-name", verifyToken, controller.updateDishesByName);
+router.delete("/delete/by-name", verifyToken, controller.deleteDishesByName);
 
 //costo
 router.get("/get/by-cost", controller.getDishesByCost);
