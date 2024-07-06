@@ -1,47 +1,66 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const {Router} = require('express');
+const router = Router();
+
 const User = require('../models/user.models.js');
-const { messageGeneral } = require('../utils/messages');
+const jwt = require('jsonwebtoken');
+const config = require('../config/config.js')
+const verifyToken = require('./verifyToken.js')
 
-const userCtrl = {};
+router.post('/API/v1/register',  async (req, res, next)=>{
+    const { username, email, password   } = req.body;
+    const user = new User ({
+        username,
+        email,
+        password
+    });
+    user.password = await user.encryptPassword(user.password);
+    await user.save();
 
-userCtrl.register = async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        const existingUser = await User.findOne({ username: username });
-        if (existingUser) {
-            return messageGeneral(res, 400, false, "", "El nombre de usuario ya existe");
-        }
+    const token = jwt.sign({id: user._id}, config.secret, {
+        expiresIn: 60 * 60
+    })
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await User.create({ username, password: hashedPassword });
-        const token = jwt.sign({ _id: newUser._id }, secretKey); // Usa secretKey directamente aquí
+    res.json({auth: true, token})
+})
 
-        messageGeneral(res, 201, true, { ...newUser._doc, password: null, token }, "El usuario se creó correctamente!!!");
-    } catch (error) {
-        messageGeneral(res, 500, false, "", error.message);
+router.get('/API/v1/profile', verifyToken, async (req, res, next)=>{
+  const user = await User.findById(req.userId, {password : 0})
+  if(!user){
+    return res.status(404).send('No user found')
+  }
+
+  res.json(user);
+})
+
+
+router.post('/API/v1/login', async (req, res, next)=>{
+  const {email, password} = req.body;  
+  const user = await User.findOne({email:email});
+
+  if(!user){
+    return res.status(404).send("The email doesn't exists");
+    
+  }
+    
+    const ValidPass = await user.valitePassword(password)
+    
+    if(!ValidPass){
+      return res.status(401).json({
+        auth: false,
+        token: null
+      });
     }
-};
+   const token =  jwt.sign({id: user._id}, config.secret,{
+      expiresIn: 60 * 60
+    })
 
-userCtrl.login = async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        const user = await User.findOne({ username: username });
-        if (!user) {
-            return messageGeneral(res, 400, false, "", "El nombre de usuario no existe");
-        }
+    res.json({
+      auth: true,
+      token
+    })
+  
+})
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return messageGeneral(res, 400, false, "", "La contraseña es incorrecta!!!");
-        }
 
-        const token = jwt.sign({ _id: user._id }, secretKey); // Usa secretKey directamente aquí
 
-        return messageGeneral(res, 200, true, { ...user._doc, password: null, token }, "Bienvenido!!!");
-    } catch (error) {
-        messageGeneral(res, 500, false, "", error.message);
-    }
-};
-
-module.exports = userCtrl;
+module.exports = router;

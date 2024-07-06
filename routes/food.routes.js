@@ -1,13 +1,14 @@
 const express = require('express');
 const controller = require("../controllers/food.controllers.js");
+const verifyToken = require('../controllers/verifyToken.js')
 
 const router = express.Router();
 
-router.get("/", controller.listDishes);
-router.get("/get", controller.getDish);
-router.post("/new", controller.newDish);
-router.put("/update", controller.updateDish);
-router.delete("/delete", controller.deleteDish);
+router.get("/",verifyToken, controller.listDishes);
+router.get("/get",verifyToken, controller.getDish);
+router.post("/new",verifyToken, controller.newDish);
+router.put("/update",verifyToken, controller.updateDish);
+router.delete("/delete",verifyToken, controller.deleteDish);
 
 // == == == THIS IS CALLED WHITE LIST == == ==
 router.use((req, res) => {
