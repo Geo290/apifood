@@ -121,7 +121,7 @@ foodCtrl.updateDishesByCost = async (req, res) => {
 }
 
 // Update dish by ingredients
-foodCtrl.updateDishByIngredients = async (req, res) => {
+foodCtrl.updateDishesByIngredients = async (req, res) => {
     try {
         const { ingredients } = req.query;
         const { updateField } = req.body; // Assuming you receive fields to update
@@ -188,7 +188,7 @@ foodCtrl.deleteDishesByCost = async (req, res) => {
 }
 
 // Delete dish by ingredients
-foodCtrl.deleteDishByIngredients = async (req, res) => {
+foodCtrl.deleteDishesByIngredients = async (req, res) => {
     try {
         const { ingredients } = req.query;
 
