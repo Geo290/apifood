@@ -12,14 +12,14 @@ router.put("/update/by-name", verifyToken, controller.updateDishesByName);
 router.delete("/delete/by-name", verifyToken, controller.deleteDishesByName);
 
 //costo
-router.get("/get/by-cost", controller.getDishesByCost);
-router.put("/update/by-cost", controller.updateDishesByCost);
-router.delete("/delete/by-cost", controller.deleteDishesByCost);
+router.get("/get/by-cost", verifyToken, controller.getDishesByCost);
+router.put("/update/by-cost", verifyToken, controller.updateDishesByCost);
+router.delete("/delete/by-cost", verifyToken, controller.deleteDishesByCost);
 
 //ingredientes
-router.get("/get/by-ingredients", controller.getDishesByIngredients);
-router.put("/update/by-ingredients", controller.updateDishesByIngredients);
-router.delete("/delete/by-ingredients", controller.deleteDishesByIngredients);
+router.get("/get/by-ingredients", verifyToken, controller.getDishesByIngredients);
+router.put("/update/by-ingredients", verifyToken, controller.updateDishesByIngredients);
+router.delete("/delete/by-ingredients", verifyToken, controller.deleteDishesByIngredients);
 
 
 // == == == THIS IS CALLED WHITE LIST == == ==
