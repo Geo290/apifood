@@ -67,11 +67,11 @@ foodCtrl.getDishesByIngredients = async (req, res) => {
     }
 }
 
-//Check for product price
-foodCtrl.getDishesForPrices = async (req, res) => {
+//Check for product cost
+foodCtrl.getDishesByCost = async (req, res) => {
     try {
-        const { price } = req.query;
-        const resp = await foodModel.findOne({ price });
+        const { cost } = req.query;
+        const resp = await foodModel.findOne({ cost });
 
         if (!resp) {
             return messageGeneral(res, 404, false, "", "Registro no encontrado"); 
@@ -102,11 +102,11 @@ foodCtrl.updateDishesByName = async (req, res) => {
     }
 }
 
-//Update for price
-foodCtrl.updateDishesForPrice = async (req, res) => {
+//Update for cost
+foodCtrl.updateDishesByCost = async (req, res) => {
     try {
-        const { price } = req.query;
-        const resp = await foodModel.findOne({ price });
+        const { cost } = req.query;
+        const resp = await foodModel.findOne({ cost });
 
         if (!resp) {
             return messageGeneral(res, 404, false, "", "Registro no encontrada");
@@ -169,11 +169,11 @@ foodCtrl.deleteDishesByName = async (req, res) => {
 
 
 
-//Delete for price
-foodCtrl.deleteDishesForPrice = async (req, res) => {
+//Delete for cost
+foodCtrl.deleteDishesByCost = async (req, res) => {
     try {
-        const { price } = req.query;
-        const resp = await foodModel.findOne({ price });
+        const { cost } = req.query;
+        const resp = await foodModel.findOne({ cost });
 
         if (!resp) {
             return messageGeneral(res, 404, false, "", "Registro no encontrado");
